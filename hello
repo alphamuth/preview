@@ -1,0 +1,1621 @@
+A Machine learning approach for predicting
+Coronary heart disease using Risk factors
+A report submitted for the course named Project II (CS-300)
+By
+Rahul Ranjan
+Bachelor of Technology, VI Semester
+Roll No. 16010121
+Under the Supervision and Guidance of
+Dr. N.Kishorjit Singh
+Department of Computer Science and Engineering
+Indian Institute of Information Technology Manipur
+April, 2019Abstract
+The healthcare environment is more and more data enriched, but the amount of
+knowledge getting from those data is very less, because lack of data anal- ysis
+tools. We need to get the hidden relationships from the data. In the healthcare
+system to predict the heart attack perfectly, there are some tech- niques which are
+already in use. This System uses efficient algorithms such as Logistic regression,
+SVM, etc. I will further also use the Backward Propagation algorithm to predict
+the heart diseases. Here the dataset with 6 attributes is used to diagnose the heart
+attacks. The dataset used contains Risk factors reasonable for heart attack or
+diseases which is provided by UCI machine learning repository 1 . The results of
+the prediction give more accurate output than the other techniques. The aim is to
+distinguish between the presence and absence of Coronary Heart Disease (CHD)
+using various risk factors and to classify it whether the input data has a risk
+of 10-year CHD by using binary classification.In this Project various machine
+learning algorithms is to be used to enhance the system better.
+1
+https://archive.ics.uci.edu/ml/index.php
+iiDeclaration
+I declare that this submission represents my idea in my own words and where
+others' idea or words have been included, I have adequately cited and referenced
+the original source. I also declare that I have adhered to all principles of academic
+honesty and integrity and have not misrepresented or fabricated or falsified any
+idea/data/fact/sources in my submission. I understand that any violation of the
+above will be a cause for disciplinary action by the institute and can also evoke
+penal action from the sources which have thus not been properly cited or from
+proper permission has not been taken when needed.
+(Signature)
+(Name of the student)
+Date:
+(Roll no)
+iiiDepartment of Computer Science & Engineering
+Indian Institute of Information Technology Manipur
+Dr. N.Kishorjit Singh
+Assistant Professor
+Email: kishorjit@iiitmanipur.ac.in
+To Whom It May Concern
+This is to certify that the report entitled “A Machine learning approach for
+predicting Coronary heart disease using Risk factors” submitted to by "Rahul
+Ranjan", has been carried out under my supervision and that this work has not
+been submitted elsewhere for a degree,diploma or a course.
+Signature of Supervisor
+(Dr Nongmeikapam Kishorjit Singh )
+ivDepartment of Computer Science & Engineering
+Indian Institute of Information Technology Manipur
+Dr N. Kishorjit Singh
+Assistant Professor
+Email: kishorjit@iiitmanipur.ac.in
+To Whom It May Concern
+This is to certify that the report entitled “A Machine learning approach for
+predicting Coronary heart disease using Risk factors” submitted to by "Rahul
+Ranjan", has been carried out under my supervision and that this work has not
+been submitted elsewhere for a degree,diploma or a course.
+Signature of HOD
+(Dr Nongmeikapam Kishorjit Singh )
+Signature of Examiner 1:
+Signature of Examiner 2:
+Signature of Examiner 3:
+Signature of Examiner 4:
+vAcknowledgement
+I extend my sincere thanks to the institute who has provided me a chance to do
+this project. I would like to express my thanks to Dr. N.Kishorjit Singh ,project
+guide for his vital suggestion ,meticulous guidance and constant motivation which
+went a long way in successful completion of the project. I cannot move on without
+thank to Dr. Navnath Saharia who has always been an inspiration to me . I
+would like to thanks to Dr.Kabita Tharoijam, Dr. Prerna Mohit Himangshu
+Sarma , project coordinator who has been organising the project presentation
+time to time which helped me to finish the project on time. On a moral personal
+note my deepest appreciation and gratitude to my beloved friends ,who has been
+an inspiration and have provided me a unrelenting encouragement and support.
+- Rahul RanjanContents
+Abstract
+ii
+Declaration iii
+Certificate iv
+Certificate v
+Acknowledgement vi
+Table of contents vii
+List of tables x
+List of figures xi
+List of abbreviations
+xiii
+1 Introduction
+1.1
+1.2
+1
+Coronary heart disease . . . . . . . . . . . . . . . . . . . . . . . . . . .
+3
+1.1.0.1 Symptoms of Coronary heart diseases . . . . . . . . . . 3
+1.1.0.2 Diagnosis . . . . . . . . . . . . . . . . . . . . . . . . . . 5
+1.1.0.3 Treatment . . . . . . . . . . . . . . . . . . . . . . . . . 5
+Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 6
+vii1.3
+Different types of heart disease[1] . . . . . . . . . . . . . . . . . . . . . .
+2 Existing System & Analysis
+8
+9
+2.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+2.2 Literature study . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 10
+2.3 Proposed Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+2.4 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 13
+3 System Design
+14
+3.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 15
+3.2 Exploratory analysis of dataset . . . . . . . . . . . . . . . . . . . . . . . 15
+3.3 Methodology . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+3.4 System Model . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 21
+3.4.1 Support Vector Machine . . . . . . . . . . . . . . . . . . . . . . . 22
+3.4.2 Logistic Regression . . . . . . . . . . . . . . . . . . . . . . . . . . 23
+3.4.2.1 Variables inclusion and selection in Logistic regression . 24
+3.5 Naive Bayes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 25
+3.6 Decision Tree . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 26
+3.7 Backward feature elimination . . . . . . . . . . . . . . . . . . . . . . . . 27
+3.8 Summary . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 28
+4 Implementation, Testing & Results
+29
+4.1 Introduction . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+4.2 Support Vector Machine (SVM) . . . . . . . . . . . . . . . . . . . . . . . 31
+4.3 Random Forest Classifier . . . . . . . . . . . . . . . . . . . . . . . . . . . 32
+4.4 Logistic Regression . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 33
+4.4.1 34
+A better cost function for logistic regression . . . . . . . . . . . .
+viii4.5 Decision Tree . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 34
+4.6 Naive Bayes . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 36
+4.7 Results . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 38
+4.7.1 Some mathematical interpretation of data . . . . . . . . . . . . . 38
+4.7.2 ROC curve for CHD classifier . . . . . . . . . . . . . . . . . . . . 40
+4.7.3 Prediction model comparison . . . . . . . . . . . . . . . . . . . . 41
+4.7.4 Prediction of Coronory heart disease . . . . . . . . . . . . . . . . 42
+Testing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+4.8.1 Confusion Matrix . . . . . . . . . . . . . . . . . . . . . . . . . . . 42
+4.8.1.1 Precision . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+4.8.1.2 Recall . . . . . . . . . . . . . . . . . . . . . . . . . . . . 43
+4.8.1.3 F-score or F1-score . . . . . . . . . . . . . . . . . . . . . 44
+Classification Accuracy . . . . . . . . . . . . . . . . . . . . . . . . 44
+Source Code . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+4.9.1 Preprocessing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 45
+4.9.2 Visualisation of dataset . . . . . . . . . . . . . . . . . . . . . . . 45
+4.9.3 Mathematical Interpretations . . . . . . . . . . . . . . . . . . . . 46
+4.9.4 Backward feature elimination . . . . . . . . . . . . . . . . . . . . 47
+4.9.5 Calculation of Odds Ratio, Confidence Intervals and Pvalues . . . 47
+4.9.6 Prediction Model or Classifier Model . . . . . . . . . . . . . . . . 48
+4.8
+4.8.2
+4.9
+5 Conclusion & Future Work 52
+Bibliography 54
+ixList of Tables
+1.1 Types of heart disease . . . . . . . . . . . . . . . . . . . . . . . . . . . . 8
+4.1 Mathematical interpretation of data . . . . . . . . . . . . . . . . . . . . . 38
+4.2 Comparison of accuracy of different models . . . . . . . . . . . . . . . . . 41
+4.3 Prediction of Coronory heart disease using probability for first 10 patients 42
+xList of Figures
+1.1
+A study shows that heart ailments caused more than 2.1 million deaths in
+India in 2015 at all ages. Graphic: Mint . . . . . . . . . . . . . . . . . . 7
+3.1 Visualization of risk factors . . . . . . . . . . . . . . . . . . . . . . . . . 16
+3.2 Confusion Matrix of the dataset . . . . . . . . . . . . . . . . . . . . . . . 17
+3.3 TenYearCHD Dataset . . . . . . . . . . . . . . . . . . . . . . . . . . . . 19
+3.4 Confusion Matrix of the dataset . . . . . . . . . . . . . . . . . . . . . . . 20
+3.5 System Model . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 22
+3.6 Decision Tree as an Example . . . . . . . . . . . . . . . . . . . . . . . . 27
+3.7 Backward feature elimination . . . . . . . . . . . . . . . . . . . . . . . . 28
+4.1 System Architecture . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 30
+4.2 Support Vector Machine . . . . . . . . . . . . . . . . . . . . . . . . . . . 31
+4.3 Support Vector Machine using different kernels . . . . . . . . . . . . . . 32
+4.4 Random Forest using various Kernels . . . . . . . . . . . . . . . . . . . . 33
+4.5 An example of a non-convex function. The grey point on the right side
+shows a potential local minimum . . . . . . . . . . . . . . . . . . . . . . 34
+4.6 A decision tree . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . 35
+4.7 Logit Regression results as mathematical relation . . . . . . . . . . . . . 39
+4.8 Represents the Odds Ratio, Confidence Intervals and Pvalues . . . . . . 40
+4.9 ROC curve for CHD classifier . . . . . . . . . . . . . . . . . . . . . . . . 40
+4.10 Comparison of accuracy of different models
+xi
+. . . . . . . . . . . . . . . .
+414.11 Confusion Matrix
+. . . . . . . . . . . . . . . . . . . . . . . . . . . . . .
+xii
+43List of abbreviations
+A
+AD
+Arduino
+C
+CHD Coronory Heart Diseases
+DT
+DBMS Decision Tree
+Database Management Systems
+D
+H
+HTML
+HMM
+Hyper Text Mark-up Language
+Hidden Markov Model
+M
+MLP
+MST
+Multilayer Perceptron
+Maximum Spanning Tree parser
+N
+NB
+IR
+Naive Bayes
+Information Retrieval
+S
+SVM
+Support Vector Machine
+xiiiChapter 1
+Introduction
+An optimist sees an opportunity in every calamity; a pessimist sees a calamity
+in every opportunity - Anonymous
+1World Health Organization has estimated 12 million deaths occur worldwide, ev-
+ery year due to Heart diseases 1 . Half the deaths in the United States and other developed
+countries are due to cardio vascular diseases. The early prognosis of cardiovascular dis-
+eases can aid in making decisions on lifestyle changes in high risk patients and in turn
+reduce the complications. This research intends to pinpoint the most relevant/risk fac-
+tors of heart disease as well as predict the overall risk using logistic regression.
+Coronary heart disease (CHD), also known as ischemic heart disease (IHD), involves
+the reduction of blood flow to the heart muscle due to build up of plaque in the arteries
+of the heart. It is the most common of the cardiovascular diseases. Types include stable
+angina, unstable angina, myocardial infarction, and sudden cardiac death 2 . A common
+symptom is chest pain or discomfort which may travel into the shoulder, arm, back, neck,
+or jaw. Occasionally it may feel like heartburn. Usually symptoms occur with exercise or
+emotional stress, last less than a few minutes, and improve with rest. Shortness of breath
+may also occur and sometimes no symptoms are present. In many cases, the first sign is
+a heart attack. Other complications include heart failure or an abnormal heartbeat 3 .
+The heart attack is a common problem in all human beings with the age above 30. The
+cholesterol level is another one major problem which leads to heart attack. The knowl-
+edge discovery in databases is a well-defined process containing several distinct steps to
+get the perfect accuracy. Data mining is the core step, which results in the discovery of
+hidden information with useful knowledge. The discovered knowledge will be used by the
+healthcare administrators to predict some of the diseases and problems like heart attacks.
+Predicting patient’s behaviour in the future is the main application of data mining tech-
+niques. A formal definition of knowledge discovery in databases is given as follows: ”Data
+mining is the non-trivial extraction of implicit previously unknown and potentially useful
+information about data”. Medical diagnosis is an important yet complicated task that
+needs to be done accurately and efficiently. The automation of this system is very much
+needed to help the physicians to do better diagnosis and treatment. Poor clinical deci-
+sions can lead to disastrous consequences which are therefore unacceptable. The major
+challenge of the healthcare system nowadays is to predict the diseases in quality manner.
+The aim is to distinguish between the presence and absence of cardiac arrhythmia and to
+classify it in one of the 13 groups. For the time being, there exists a computer program
+1
+https://www.statista.com/statistics/510959/number-of-natural-disasters-events-globally/;
+Date: 31st August 2018
+2
+https://en.wikipedia.org/wiki/Coronary a rtery d isease
+3
+https://www.webmd.com/pain-management/guide/whats-causing-my-chest-pain
+2
+Accessthat makes such a classification. However there are differences between the cardiolog’s
+and the programs classification. Taking the cardiolog’s as a gold standard we aim to
+minimize this difference by means of machine learning tools, the different data mining
+techniques/algorithms which are used in the prediction of heart diseases using any data
+mining tool. Heart is the most vital part of the human body as life is dependent on
+efficient working of heart. A Heart disease is caused due to narrowing or blockage of
+coronary arteries. This is caused by the deposition of fat on the inner walls of the arter-
+ies and also due to build up cholesterol.
+1.1
+Coronary heart disease
+This diseases develop when the the blood, oxygen, nutrients supplying vessel to the heart
+become become damaged or diseased. It starts when the combination of cholesterol, fat
+and other substances starts to stick to the inner lining walls of the blood vessels.It makes
+arteries become harder & harder as time passes with making the arteries narrower in size
+and causes a serious heart issue and this situation is termed as ’atherosclerosis’.
+If the plaques break or rupture, then it becomes a matter of concern and the patients
+need to shifted to the hospital as soon as possible. This build up prevents a free flow of
+blood through the arteries & becomes like gunk in a clogged drainpipe. Blood carries
+oxygen and nutrients to the heart. If you don’t get enough, it can lead to shortness of
+breath and chest pain (angina).
+1.1.0.1
+Symptoms of Coronary heart diseases
+It is found that sometimes people may not have any symptoms but as the plaque contin-
+ues to build up and curbs blood flow to the heart muscle and short of breath or fatigued
+especially during exercise can be easily noticed. The most common symptom that can
+be easily observed is the chest pain but don’t mislead by heartburn or indigestion. One
+may also experience the feeling in the shoulders, arms, back, or jaw.
+There are some symptoms 4 as -
+4
+https://www.webmd.com/heart-disease/coronary-artery-disease1
+31. Tightness
+2. Discomfort
+3. Pressure
+4. Heaviness
+5. Squeezing
+6. Burning
+7. Aching
+8. Numbness
+9. Fullness
+10. Shortness of breath
+11. Nausea or vomiting with lightheadedness
+12. Dizziness, or cold sweat
+Coronary heart disease (CHD) becomes more likely as one gets older or if it runs in one’s
+family. But one can manage many other risk factors, including 5 :
+1. High cholesterol and triglycerides
+2. High blood pressure
+3. Smoking
+4. Metabolic syndrome
+5. Diabetes
+6. Obesity and overweight
+7. Lack of exercise
+8. Stress, depression, and anger
+9. Unhealthy diet
+10. Too much alcohol consumption
+11. Sleep apnea
+5
+https://www.webmd.com/heart-disease/coronary-artery-disease1
+41.1.0.2
+Diagnosis
+If someone is having chances that there may be some chances of Coronary heart diseases
+then one must consult the doctor as soon as possible as situation may become worse and
+then may help one by some diagnosis and may talk about symptoms, risks and family
+history. Following tests can be performed 6 :
+1. Electrocardiogram (ECG or EKG) : It is used to measure the heart’s electrical
+activity and can assess heart damage.
+2. Stress test : Usually, this involves walking on a treadmill or pedaling a station-
+ary bike in a doctor’s office while your EKG, heart rate, and blood pressure are
+monitored.
+3. Chest X-ray : It is used to check the condition of heart.
+4. Blood tests to check on your levels of blood sugar, cholesterol, and triglycerides (a
+type of fat in the blood) Cardiac catheterization in which a doctor guides a very
+thin, flexible tube (called a catheter) through a blood vessel in the arm or leg to
+reach to the heart.
+5. The doctor injects dye through the catheter and then uses X-ray videos to see inside
+your heart.
+1.1.0.3
+Treatment
+There are few things that one can adapt in one’s daily life to reduce or improve from
+Coronary heart disease which are -
+• Proper Medications
+• Stick to a healthy weight
+• Learn effective ways to manage your stress
+• Quit Smoking
+6
+https://www.webmd.com/heart-disease/coronary-artery-disease1
+5• Angioplasty 7 (This procedure can open blocked or narrow arteries without opening
+up the chest. In angioplasty, a doctor threads a thin, flexible tube with a balloon
+through the blood vessels until it reaches the blocked artery)
+• Limit alcohol intake
+• Exercise Regularly
+1.2
+Motivation
+About 610,000 people die of heart disease in the United States every year–that’s 1 in ev-
+ery 4 deaths.Heart disease is the leading cause of death for both men and women. More
+than half of the deaths due to heart disease in 2009 were in men 8 .Coronary heart disease
+(CHD) is the most common type of heart disease, killing over 370,000 people annually.
+There has been a 4-fold rise of CHD prevalence in India during the past 40 years us-
+ing a serious concern.A study by Gajalakshmi et al during 1995–1997 showed that CVD
+deaths are the highest (38.6%) in urban Chennai[2].The study published by Joshi et al[3]
+from Andhra Pradesh was of similar kind but it provided the relevent results.The Global
+Burden of Diseases Study reported that the disability-adjusted life years lost by CHD in
+India during 1990 was 5.6 million in men and 4.5 million in women; the projected figures
+for 2020 were 14.4 million and 7.7 million in men and women respectively[4].
+The burgeoning burden of CHD in India can be viewed from the perspective that the
+alarming rise in the prevalence of Coronory risk factors such as CigsPerDay, smok-
+ing,hypertension, atherogenic dyslipidemia, smoking, central obesity and physical inac-
+tivity. This can be observed from the view that rapid urbanization and change in lifestyle
+that occurred during the past two decades have led to the growing burden of coronary
+risk factors in India. Previous studies conducted in migrant Indians were misinterpreted
+to indicate that conventional risk factors do not account for the high prevalence and
+premature occurrence of CHD among Indians[5].
+The INTERHEART [6] study contributes significantly to our understanding of risk factors
+for coronary artery disease. It was the largest study in this field involving participants
+from different ethnic groups all over the world. However, certain caveats on the design
+and methodology are in order: firstly, the study was hospital-based from urban areas
+and the results may not be truly representing the populations at large; secondly, the
+7
+8
+https://www.webmd.com/heart-disease/coronary-artery-disease1
+https://www.cdc.gov/heartdisease/facts.htm
+6measurements were done during the acute phase of myocardial infarction which would
+have affected the readings especially those of blood pressure, plasma glucose, lipids and
+even the measures of psychosocial stress. The study established that more than 90% of
+risk of first myocardial infarctions was attributable to easily measurable and modifiable
+risk factors and blew the myth that around half of the myocardial infarctions cannot be
+explained by known risk factors. It has also brought to light the importance of psychoso-
+cial stress in causing MI. A similar case–control study called INTERSTROKE examined
+the association between risk factors and stroke. Between 2007 and 2009, 3000 patients
+with first stroke and same number of age and sex-matched controls from 22 countries
+were enrolled in the study. More than 80% of the cases and control were from low- and
+middle-income countries of Southeast Asia, India and Africa.
+According to a Coronary heart disease study following result was obtained
+9
+:
+Figure 1.1: A study shows that heart ailments caused more than 2.1 million deaths in
+India in 2015 at all ages. Graphic: Mint
+9
+https://www.livemint.com/Politics/fKmvnJ320JOkR7hX0lbdKN/Rural-India-surpasses-urban-in-
+heart-diseaserelated-deaths.html
+71.3
+Different types of heart disease[1]
+Arrhythmia
+Cardiac arrest
+Congestive heart
+failure
+Congenital heart
+disease
+Coronary heart
+disease
+High
+Blood
+Pressure
+Peripheral
+artery disease
+Stroke
+The heart beat is improper whether it may irregular,
+too slow or too fast.
+An unexpected loss of heart function, consciousness and
+breathing occur suddenly
+The heart does not pump blood as well as it should, it
+is the condition of chronic.
+The heart’s abnormality which develops before birth.
+The heart’s major blood vessels can damage or any dis-
+ease occurs in the blood vessels.
+It has a condition that the force of the blood against the
+artery walls is too high.
+The narrowed blood vessels which reduce flow of blood
+in the limbs, is the circulatory condition.
+Interruption of blood supply occur damage to the brain.
+Table 1.1: Types of heart disease
+8Chapter 2
+Existing System & Analysis
+Outline:
+This chapter presents the following:
+1. Literature survey
+2. Summary
+92.1
+Introduction
+There are not many works have been done in this area using techniques of Machine
+Learning (Such as Logistic Regression, SVM) , Artificial Neural Net- work Deep Learning.
+Life style risk factors which include eating habits, physical inactivity, smoking, alcohol
+intake, obesity are also associated with the major heart disease risk factors and heart
+disease[7].
+2.2
+Literature study
+There are not many works have been done in this area using techniques of Machine Learn-
+ing (Such as Logistic Regression, SVM) , Artificial Neural Network & Deep Learning. Life
+style risk factors which include eating habits, physical inactivity, smoking, alcohol intake,
+obesity are also associated with the major heart disease risk factors and heart disease [8].
+There are numerous works has been done related to disease prediction systems using
+different data mining techniques and machine learning algorithms in medical centres. K.
+Polaraju et al, [9] proposed Prediction of Heart Disease using Multiple Regression Model
+and it proves that Multiple Linear Regression is appropriate for predicting heart disease
+chance. The work is performed using training data set consists of 3000 instances with
+13 different attributes which has mentioned earlier. The data set is divided into two
+parts that is 70% of the data are used for training and 30% used for testing. Based on
+the results, it is clear that the classification accuracy of Regression algorithm is better
+compared to other algorithms.
+Ashok Kumar Dwivedi et al, [10] recommended different algorithms like Naive Bayes,
+Classification Tree, KNN, Logistic Regression, SVM and ANN. The Logistic Regression
+gives better accuracy compared to other algorithms.Tricuspid valve, Aortic valve, Mitral
+valve, Superior vena cava and Interior vena cava.
+Chala Beyene et al, [11] recommended Prediction and Analysis the occurrence of Heart
+Disease Using Data Mining Techniques. The main objective is to predict the occurrence
+of heart disease for early automatic diagnosis of the disease within result in short time.
+The proposed methodology is also critical in healthcare organisation with experts that
+have no more knowledge and skill. It uses different medical attributes such as blood
+10sugar and heart rate, age, sex are some of the attributes are included to identify if the
+person has heart disease or not. Analyses of dataset are computed using WEKA software.
+MeghaShahi et al, [12] suggested Heart Disease Prediction System using Data Mining
+Techniques. WEKA software used for automatic diagnosis of disease and to give quali-
+ties of services in healthcare centres. The paper used various algorithms like SVM, Naïve
+Bayes, Association rule, KNN, ANN, and Decision Tree. The paper recommended SVM
+is effective and provides more accuracy as compared with other data mining algorithms.
+R. Sharmila et al, [13] proposed to use non- linear classification algorithm for heart
+disease prediction. It is proposed to use bigdata tools such as Hadoop Distributed File
+System (HDFS), Mapreduce along with SVM for prediction of heart disease with opti-
+mized attribute set. This work made an investigation on the use of different data mining
+techniques for predicting heart diseases. It suggests to use HDFS for storing large data
+in different nodes and executing the prediction algorithm using SVM in more than one
+node simultaneously using SVM. SVM is used in parallel fashion which yielded better
+computation time than sequential SVM.
+Purushottam et al, [14] proposed an efficient heart disease prediction system using data
+mining. This system helps medical practitioner to make effective decision making based
+on the certain parameter. By testing and training phase a certain parameter, it provides
+86.3% accuracy in testing phase and 87.3% in training phase.
+P.Sai Chandrasekhar Reddy et al, [15] proposed Heart disease prediction using ANN
+algorithm in data mining. Due to increasing expenses of heart disease diagnosis disease,
+there was a need to develop new system which can predict heart disease. Prediction
+model is used to predict the condition of the patient after evaluation on the basis of
+various parameters like heart beat rate, blood pressure, cholesterol etc. The accuracy of
+the system is proved in java.
+Ashwini shetty et al, [16] recommended to develop the prediction system which will
+diagnosis the heart disease from patient’s medical dataset. 13 risk factors of input at-
+tributes have taken into account to build the system. After analysis of the data from the
+dataset, data cleaning and data integration was performed.
+Jaymin Patel et al, [17] suggested data mining techniques and machine learning to pre-
+dict heart disease. There are two objectives to predict the heart system. 1. This system
+11not assume any knowledge in prior about the patient’s records. 2. The system which
+chosen must be scalar to run against the large number of records. This system can be
+implemented using WEKA software. For testing, the classification tools and explorer
+mode of WEKA are used.
+Boshra Brahmi et al, [18] developed different data mining techniques to evaluate the
+prediction and diagnosis of heart disease. The main objective is to evaluate the differ-
+ent classification techniques such as J48, Decision Tree, KNN, SMO and Naïve Bayes.
+After this, evaluating some performance in measures of accuracy, precision, sensitivity,
+specificity are evaluated and compared. J48 and decision tree gives the best technique
+for heart disease prediction.
+Noura Ajam [19]recommended artificial neural network for heart disease diagnosis. Based
+on their ability, Feed forward Back propogation learning algorithms have used to test the
+model. By considering appropriate function, classification accuracy reached to 88% and
+20 neurons in hidden layer. ANN shows result significantly for heart disease prediction.
+Prajakta Ghadge et al, [20]suggested big data for heart attack prediction. The objec-
+tive of this paper is to provide prototype using big data and data modelling techniques.
+It can be also used to extract patterns and relationships from database which associated
+with heart disease. This system consists of two databases namely, original big dataset
+and another is updated one. A java-file system named HDFS used to provide a user with
+reliable. This system can assist the healthcare practitioners to make intelligent decisions.
+The automation in this system would be advantageous.
+Sairabi H.Mujawar et al, [21] used k-means and naïve bayes to predict heart disease.
+This paper is to build the system using historical heart database that gives diagnosis. 13
+attributes have considered for building the system. To extract knowledge from database,
+data mining techniques such as clustering, classification methods can be used. 13 at-
+tributes with total of 300 records were used from the Cleveland Heart Database. This
+model is to predict whether the patient have heart disease or not based on the values of
+13 attributes.
+122.3
+Proposed Architecture
+The proposed architecture is the improved version of architecture already build by various
+other researchers. As previously there were many worked done in this area but there are
+very less work which involved the application of machine learning as well as neural network
+, most of the works are based on data analysis and visualization not the prediction with
+better accuracy. The proposed system is the extended version of existing system by using
+neural network, to improve the accuracy of the system.
+These machine learning techniques can be deployed in hospitals where a large dataset is
+available and can help the doctors in making more precise decisions and to cut down the
+number of causalities due to heart diseases in the future.
+2.4
+Summary
+In this chapter, the recent studies as literature survey is presented and while building
+this system which papers and existing system were refered.
+13Chapter 3
+System Design
+Outline:
+This chapter presents the following:
+1. Introduction
+2. Dataset
+3. Methodology
+4. System Model
+5. Summary
+143.1
+Introduction
+In this chapter the design & analysis of this project is shown with detailed models and
+their usability and understanding, this design phase can be roughly divided into mainly
+two parts
+• Data pre-processing
+• Training and Testing of the model
+Using this design, the implementation phase is achieved so design plays the most impor-
+tant role in accuracy of the project, this phase has taken more time than other phase,
+the design phase is carried out in a smooth way so as to avoid any chances of failure of
+the system.
+3.2
+Exploratory analysis of dataset
+The dataset for the project is taken from the UCI Repository 1 . There are (452) rows,
+each representing medical record of a different patient.The aim is to distinguish between
+the presence and absence of cardiac arrhythmia and to classify it in one of the 13 groups.
+For the time being, there exists a computer program that makes such a classification.
+However there are differences between the cardiolog’s and the programs classification.
+Taking the cardiolog’s as a gold standard we aim to minimize this difference by means of
+machine learning tools.
+1
+https://archive.ics.uci.edu/ml/datasets/arrhythmia
+15Figure 3.1: Visualization of risk factors
+In Figure 3.1 dataset is properly described with proper visulaization with proper
+diagram and describes the classes or risk factors responsible for coronory heart diseases
+and can be easily identified it
+16To begin with, let’s see the confusion matrix obtained which consists of features
+and try to analyse it. The figure size is defined to confusion matrix of 2x2 row-column
+matrix . Then, here heatmap with matplotlib is used to show the correlation matrix.
+Figure 3.2: Confusion Matrix of the dataset
+In Figure 3.2 represents the Confusion Matrix which is obtained from to analysis
+the system and using this accuarcy and be predicted easily and helps in mathematical
+calculation.
+17The Dataset consists of following Risk Factors as :
+Dataset
+S.NO. Risk Factors Values
+1 Sex Male (120-34)or Female(0)
+2 Age(years) 20-34 (-2), 35-50 (-1), 51-60 (0), 61-79 (1) ,
+>79 (2)
+3 Current Smoker No(0) or Yes(1)
+4 Cigs/day Quantiy (0-50)
+5 BPMeds Yes(1) or No(0)
+6 prevalentStroke Yes(1) or No(0)
+7 prevalentHyp Yes(1) or No(0)
+8 diabetes Yes(1) or No(0)
+9 totChol Below 200 mg/dL - Low (-1), 200-239 mg/dL
+- Normal (0), 240 mg/dL and above - High
+(1)
+10 BMI Normal weight: BMI is (18.5 to 24.9),Over-
+weight: BMI is 25 to 29.9, Obese: BMI is 30
+or more.
+11 heartRate 60 to 100 bpm
+12 glucose NOrmal is 70mg/DL to 100mg/DL
+13 TenYearCHD Yes(1) or No(0)
+Table 3.1 Risk Factors
+In Table 3.1 dataset is represented with proper labelling used in the system, here each
+column represents various risk factors with its range and labelling.It can be used to
+analysis the system using this table.
+18Visualization of Ten Year chances of CHD labelled dataset -
+Figure 3.3: TenYearCHD Dataset
+Figure 3.3. shows the TenYearCHD graph of the dataset used in training the
+model using various prediction model.Here this diagram shows the visualisation of TenYearCHD
+having labelling either 0 or 1.
+19Figure 3.4: Confusion Matrix of the dataset
+20Figure 3.4 represents the clustering and visualisation of dataset set separately
+using seaborn library as this can be used to understand the entire model and dataset.
+This can be a part of Data analysis part which has been already obtained by various
+researchers.
+3.3
+Methodology
+The following methodology is used in designing the whole system -
+• Feature Selection : Firstly, we removed some of the categorical features that
+were 95% of time indicating either all 0’s or all 1’s. If any training instance has a
+missing value for a given attribute, we set it as the mean of the value plus or minus
+the standard deviation for that attribute related to the class it belongs to. If for a
+given attribute majority of values are missing, then we discard that attribute and
+remove it from our training set.
+The features can be grouped into 5 blocks –
+1. Features concerning biographical characteristics, i.e., age, sex, height, weight
+and heart rate.
+2. Features concerning Current Smoker status, Cigs/day, BPMeds, etc.
+3. Features concerning health status such as diabetes, totalCholestrol, Body Mass
+Index, heart rate, glucose level,etc.
+4. Features concerning chances of coronory heart diseases.
+3.4
+System Model
+There are lots of results has already been obtained using data analysis techniques but
+there are only few systems are available that can be used for predicting the chances of
+coronary heart diseases.
+21Following diagram shows the structure of the system -
+Figure 3.5: System Model
+Figure 3.5 represents the system model which is implemented in implementation
+section of this report.This can be referenced when one wants to understand the entire
+system.In this system dataset is preprocessed then splitted into training and testing
+dataset, further the model is trained over the training and testing dataset to predict the
+desired output.
+The previously built systems also lack the better accuracy of the model, so in
+order to improve the solution over the existing dataset Neural Network is implemented
+in this system along with other machine learning techniques such as Logistic regression,
+Support vector machine, Random Forest, etc.Some of them are discussed below -
+3.4.1
+Support Vector Machine
+In 1992, the Support Vector Machine (SVM) was first heard, introduced by Boser, Guyon,
+and Vapnik in COLT-92.Support vector machines (SVMs) are a set of related supervised
+learning methods used for classification and regression 2 .SVM belongs to the family of gen-
+eralized linear classifiers and it is a classification and regression prediction tool that uses
+machine learning concepts to maximize predictive accuracy while automatically avoiding
+over-fitting of the data.Support Vector machines can be defined as systems which use
+hypothesis space of a linear functions in a high dimensional feature space, trained with
+2
+Wikipedia Online. Http://en.wikipedia.org/wiki
+22a learning algorithm from optimization theory that implements a learning bias derived
+from statistical learning theory. SVM is pretty well known when used with the pixel
+maps as input. SVM is having a large community support for developers who are using
+and contributing to it and it gives accuracy comparable to sophisticated neural networks
+with elaborated features in a handwriting recognition task 3 .
+It is also being used for many applications, such as hand writing analysis, face
+analysis, spam detection, hate speech detection and so on especially for pattern classifi-
+cation and regression based applications. The foundations of Support Vector Machines
+(SVM) have been developed by Vapnik[22] and gained popularity due to many promising
+features such as better empirical performance. The formulation uses the Structural Risk
+Minimization (SRM) principle, which has been shown to be superior[23], to traditional
+Empirical Risk Minimization (ERM) principle, used by conventional neural networks.
+SRM minimizes an upper bound on the expected risk, where as ERM minimizes the er-
+ror on the training data. It is this difference which equips SVM with a greater ability to
+generalize, which is the goal in statistical learning. SVMs were developed to solve the clas-
+sification problem, but recently they have been extended to solve regression problems[24]
+3.4.2
+Logistic Regression
+Logistic regression is used to obtain odds ratio if there are more than on explanatory vari-
+able and can be similar as multiple linear regression, with exception that the response
+variable is binomial. The result is the impact of each variable on the odds ratio of the
+viewed event of interest. The main advantages of logistic regression can be observed
+as it is used to avoid confounding effects by analysing the association of all variables
+together.Logistic regression works as similar as linear regression, but with a binomial re-
+sponse variable. When logistic regression is compared with Mantel Haenszel or continous
+explanatory variables and it becomes easy to handle more than two explanatory vari-
+ables simultaneously. Although apparently trivial,when we are interested in the impact
+of various explanatory variables on the response variable then this last characteristic is es-
+sential . If outcome based then a logistic regression will model the chance of on individual
+characteristics .
+3
+Tutorial slides by Andrew Moore. Http://www.cs.cmu.edu/ awm
+23Because chance is a ratio, what will be actually modelled is the logarithm of the
+chance given by:
+log(
+π
+) = β 0 + β 1 x 1 + β 2 x 2 + .... + β m x m
+1 − π
+(3.1)
+where π indicates the probability of an event (e.g., death in the previous exam-
+ple), and β i are the regression coefficients associated with the reference group and the x i
+explanatory variables. At this point, an important concept must to be highlight- ed. The
+reference group, represented by � 0 , is constituted by those individuals presenting the
+reference level of each and every variable x 1...m . To illustrate, considering our previous
+example, these are the individuals older aged that received standard treatment.
+3.4.2.1
+Variables inclusion and selection in Logistic regression
+It is a tough task when deciding which variables to include which not to, while building the
+logistic regression model. It is found that researchers usually collects as many variables
+as possible in their research instrument and merging all to a uniform single significant
+project.Usually researcher lead to mainly two situations that they have to deal with, the
+first is, when one or more variables are statistically “significant”, but the researcher has
+no theory to link the “significant” variable to the event of inter- est modelled. It must
+a point to remember that when researchers work with samples and spurious results can
+occur and the second is that a model with more variables presents less statistical power.
+So, if there is an association between one explanatory variable and the occurrence of an
+event, researcher can miss this effect because saturated models (those that contains all
+possible explanatory variables) are not sensible enough to detect it. So the researcher
+must to be very cautious with the selection of variables to include into the model.
+When an explanatory variable is multinomial, then we must build n-1 binary variables
+(called dummy variable) to it, where n indicates the number of levels of the variable. A
+dummy variable is just a variable that will assume value one if subject presents the spec-
+ified category and zero otherwise and can be represented as -
+24(Low) log(
+(Medium) log(
+(High) log(
+3.5
+π
+) = β 0 + β 1 x 1 + β 2 x 2 + .... + β m x m = β 0
+1 − π (3.2)
+π
+= β 0 + β 1 x 1 + β 2 x 2 + .... + β m x m = β 0 + β 1
+1 − π) (3.3)
+π
+) = β 0 + β 1 x 1 + β 2 x 2 + .... + β m x m = β 0 + β 2
+1 − π
+(3.4)
+Naive Bayes
+Naive Bayes classifiers are a collection of classification algorithms based on Bayes’ The-
+orem. It is not a single algorithm but a family of algorithms where all of them share
+a common principle, i.e. every pair of features being classified is independent of each
+other.It is based on Bayes’ Theorem and finds the probability of an event occurring given
+the probability of another event that has already occurred. Bayes’ theorem is stated
+mathematically as the following equation:
+P (A|B) =
+P (B|A) ∗ P (A)
+P (B)
+(3.5)
+where,
+where A and B are events
+Now, with regards to our dataset, we can apply Bayes’ theorem in following way:
+P (Y |X) =
+P (X|Y ) ∗ P (Y )
+P (X)
+where, y is class variable and X is a dependent feature vector (of size n) where:
+X = (x 1 , x 2 , ....., x n )
+25
+(3.6)and,
+Now, as the denominator remains constant for a given input, we can remove that term:
+P (Y |X) = αP (Y )Π ni=1 P (x_i)|Y
+3.6
+(3.7)
+Decision Tree
+A decision tree is a tree-like graph with nodes representing the place where we pick an
+attribute and ask a question; edges represent the answers the to the question; and the
+leaves represent the actual output or class label. They are used in non-linear decision
+making with simple linear decision surface.
+Decision Tree Analysis is a general, predictive modelling tool that has applications span-
+ning a number of different areas. In general, decision trees are constructed via an algo-
+rithmic approach that identifies ways to split a data set based on different conditions. It
+is one of the most widely used and practical methods for supervised learning. Decision
+Trees are a non-parametric supervised learning method used for both classification and
+regression tasks. The goal is to create a model that predicts the value of a target variable
+by learning simple decision rules inferred from the data features.
+The decision rules are generally in form of if-then-else statements. The deeper the tree,
+the more complex the rules and fitter the model.
+Before we dive deep, let’s get familiar with some of the terminologies:
+• Instances: Refer to the vector of features or attributes that define the input space
+• Attribute: A quantity describing an instance
+• Concept: The function that maps input to output
+• Target Concept: The function that we are trying to find, i.e., the actual answer
+• Hypothesis Class: Set of all the possible functions
+• Sample: A set of inputs paired with a label, which is the correct output (also
+known as the Training Set)
+• Candidate Concept: A concept which we think is the target concept
+26• Testing Set: Similar to the training set and is used to test the candidate concept
+and determine its performance
+Figure 3.6: Decision Tree as an Example
+Figure 3.7 illustrates a learned decision tree. We can see that each node represents
+an attribute or feature and the branch from each node represents the outcome of that
+node. Finally, its the leaves of the tree where the final decision is made.
+3.7
+Backward feature elimination 4
+Feature Selection is the process of selecting out the most significant features from a given
+dataset. In many of the cases, Feature Selection can enhance the performance of a ma-
+chine learning model as well.The importance of feature selection can best be recognized
+when you are dealing with a dataset that contains a vast number of features. This type
+of dataset is often referred to as a high dimensional dataset. Now, with this high di-
+mensionality, comes a lot of problems such as - this high dimensionality will significantly
+increase the training time of your machine learning model, it can make your model very
+complicated which in turn may lead to Overfitting.
+Like filter methods, let me give you a same kind of info-graphic which will help you
+to understand wrapper methods better:
+4
+https://www.datacamp.com/community/tutorials/feature-selection-python
+27Figure 3.7: Backward feature elimination
+Figure 3.7 represents backward feature elimination, it works as first select a set of fea-
+tures and generate another set of features and select it as another feature for learning
+algorithm in this case predicting models.
+3.8
+Summary
+Here dataset is properly described with proper visulaization with proper diagram and de-
+scribes the classes or risk factors responsible for coronory heart diseases and can be easily
+identified it and also represents the Confusion Matrix which is obtained from to analysis
+the system and using this accuarcy and be predicted easily and helps in mathematical
+calculation.
+the dataset is represented with proper labelling used in the system, here each column
+represents various risk factors with its range and labelling.It can be used to analysis the
+system using this table.Here, shows the TenYearCHD graph of the dataset used in train-
+ing the model using various prediction model.Here this diagram shows the visualisation
+of TenYearCHD having labelling either 0 or 1.It represents the clustering and visualisa-
+tion of dataset set separately using seaborn library as this can be used to understand
+the entire model and dataset. This can be a part of Data analysis part which has been
+already obtained by various researchers.
+28Chapter 4
+Implementation, Testing & Results
+Outline:
+This chapter presents the following:
+1. Introduction
+2. Support Vector Machine
+3. Random Forest
+4. Logistic Regression
+5. Naive Bayes
+6. Decision Tree
+7. Testing Result
+8. Source Code
+294.1
+Introduction
+Firstly, we removed some of the categorical features that were 95% of time indicating
+either all 0’s or all 1’s. If any training instance has a missing value for a given attribute,
+we set it as the mean of the value plus or minus the standard deviation for that attribute
+related to the class it belongs to. If for a given attribute majority of values are missing,
+then we discard that attribute and remove it from our training set. The features can be
+grouped into 5 blocks – Features concerning biographical characteristics, i.e., age, sex,
+height, weight and heart rate.
+Figure 4.1: System Architecture
+In this system represented in Figure 4.1 , The dataset is taken from UCI Machine
+Learning repository 1 , and preprocessed which previously contain irrelevant risk factors
+, not relevant to coronary heart disease such education of patients as well as those risk
+factors which are mostly empty, i.e, either ’NA’ or ’0’ and are of no use in this project,
+We removed such risk factors and preprocessed the dataset again. Thereafter We trained
+Model is trained on this dataset using Logistic regression, SVM, Random Forest algorithm
+and again generated the features subset to improve the accuracy of the system using
+Backward feature elimination (BFE) method. Then selected the best features subset for
+training the model again and again until system reached the desired P-Value. By splitting
+this final dataset into training & testing data, i.e. , 80% and 20% respectively.The system
+is predicting value using various algorithms like SVM, Logistic Regression, Decision Tree,
+Random forest classifier and Naive bayes. The output obtained is comapred in table.
+1
+https://archive.ics.uci.edu/ml/datasets/arrhythmia
+304.2
+Support Vector Machine (SVM)
+SVM works by mapping data to a high-dimensional feature space so that data points
+can be categorized, even when the data are not otherwise linearly separable. A separator
+between the categories is found, then the data are transformed in such a way that the
+separator could be drawn as a hyperplane. Following this, characteristics of new data
+can be used to predict the group to which a new record should belong. A linear kernel
+function is recommended when linear separation of the data is straightforward. In other
+cases, one of the other functions should be used. You will need to experiment with
+the different functions to obtain the best model in each case, as they each use different
+algorithms and parameters. A support vector machine constructs a hyper-plane or set of
+hyper-planes in a high or infinite dimensional space, which can be used for classification,
+regression or other tasks. Intuitively, a good separation is achieved by the hyper-plane
+that has the largest distance to the nearest training data points of any class (so-called
+functional margin), since in general the larger the mar- gin the lower the generalization
+error of the classifier.
+Figure 4.2: Support Vector Machine
+31Figure 4.2 2 and Figure 4.3 3 shows SVM using various Kernels such as Linear ,
+Polynomial ,etc. and can be represented as show in the figure -
+Figure 4.3: Support Vector Machine using different kernels
+4.3
+Random Forest Classifier
+Here, implementation of Random Forest classifier is achieved. The model works by con-
+tinually sampling with replacement a portion of the training dataset, and fitting a decision
+tree to it. The number of trees refer to the number of times the dataset is randomly sam-
+pled. Moreover, in each sampling iteration, a random set of features are selected. In
+decision trees, each node refers to one of the input variables, which has edges to children
+for all possible values that the input can take. Each leaf corresponds to a value of the
+class label given the values of the input variables represented by the path from the root
+node to the leaf node. The number of trees and the number of leaves are learned via
+cross validation.
+The default values for the parameters controlling the size of the trees (e.g. max depth,
+min samples leaf, etc.) lead to fully grown and unpruned trees which can potentially be
+very large on some data sets.In Figure 4.4 to reduce memory consumption, the complexity
+2
+3
+https://scikit-learn.org/stable/modules/svm.html
+https://scikit-learn.org/stable/modules/svm.html
+32and size of the trees should be controlled by setting those parameter values. The features
+are always randomly permuted at each split. Therefore, the best found split may vary,
+even with the same training data, max features=n features and bootstrap=False, if the
+improvement of the criterion is identical for several splits enumerated during the search
+of the best split. To obtain a deterministic behaviour during fitting, random state has to
+be fixed.Following figure represents Random forest 4 -
+Figure 4.4: Random Forest using various Kernels
+4.4
+Logistic Regression
+Logistic regression is the appropriate regression analysis to conduct when the dependent
+variable is dichotomous (binary). Like all regression analyses, the logistic regression is
+a predictive analysis. Logistic regression is used to describe data and to explain the
+relationship between one dependent binary variable and one or more nominal, ordinal,
+interval or ratio-level independent variables. The underlying C implementation uses a
+random number generator to select features when fitting the model. It is thus not un-
+common, to have slightly different results for the same input data. If that happens, try
+with a smaller parameter. Sometimes logistic regressions are difficult to interpret; the
+Intellectus Statistics tool easily allows you to conduct the analysis, then in plain English
+interprets the output.
+Logistic regression is a type of regression analysis in statistics used for prediction of
+4
+https://www.google.co.in/randomforest
+33outcome of a categorical dependent variable from a set of predictor or independent vari-
+ables. In logistic regression the dependent variable is always binary. Logistic regression
+is mainly used to for prediction and also calculating the probability of success.
+4.4.1
+A better cost function for logistic regression
+Let me go back to Figure 4.5 5 a minute to the cost function we used in linear regression
+and the Cost function for Logistic regression is as given below :
+1 ∑
+(h(x i )−y i ) 2
+2m i=1
+m
+J() =
+(4.1)
+Figure 4.5: An example of a non-convex function. The grey point on the right side
+shows a potential local minimum
+4.5
+Decision Tree
+Decision Tree algorithm is one of the supervised machine learning algorithm which can be
+used for multiclass classification . The general motive of using Decision Tree is to create
+a training model which can use to predict class or value of target variables by learning
+5
+https://www.google.co.in/url?sa=isource=imagescd=cadl
+34decision rules inferred from prior data(training data).The understanding level of Decision
+Trees algorithm is so easy compared with other classification algorithms. The decision
+tree algorithm tries to solve the problem, by using tree representation. Each internal
+node of the tree corresponds to an attribute, and each leaf node corresponds to a class
+label[15]. Decision Tree Algorithm Pseudocode-
+• Best attribute of training set is placed as root of tree.
+• Split the training set into subsets. Subsets should be made in such a way that each
+subset contains data with the same value for an attribute.
+• In decision trees, for predicting a class label for a record we start from the root
+of the tree. We compare the values of the root attribute with record’s attribute.
+On the basis of comparison, we follow the branch corresponding to that value and
+jump to the next node.
+• Comparing our record’s attribute values with other internal nodes of the tree until
+we reach a leaf node with predicted class value remain continued. As how the
+modeled decision tree can be used to predict the target class or the value shown in
+figure
+Figure 4.6: A decision tree
+In Figure 4.6 6 it is show that how decision tree looks like and how it procedes node by
+node further from root to leaf node.To define information gain precisely, we need to define
+a measure commonly used in information theory called entropy that measures the level
+6
+https://www.hackerearth.com/practice/machine-learning/machine-learning-algorithms/ml-
+decision-tree/tutorial/
+35of impurity in a group of examples. Mathematically, it is defined as 7 :
+p i = P robabilityof classi
+(4.2)
+Since, the basic version of the ID3 algorithm deal with the case where classification are
+either positive or negative, we can define entropy as :
+Entropy(S) = −p + log 2 p + − p − log 2 p −
+(4.3)
+where,
+S is a sample of training examples
+p + is the proportion of positive examples in S
+p − is the proportion of negative examples in S
+4.6
+Naive Bayes
+Naive Bayes classifier can be used for multiclass classification where class are more than
+two. Naive Bayes is based on probabilistic model used in machine learning. It calculte as
+a Bayes theorem used in probability. Bayes theorem is used when each feature is indepen-
+dent form each other. In Naive Bayes also the features are considered independent with
+each other.If features are dependent then this model can not be used. Naive base classifier
+assign class to the training set .The training set contains fearture vector which is used as
+input .The output will be labels form finite set which is predicted. Naive base classifier
+7
+https://www.hackerearth.com/practice/machine-learning/machine-learning-algorithms/ml-
+decision-tree/tutorial/
+36uses more than one algorithms not only one algo. All naive Bayes classifiers assume that
+the value of a particular feature is independent of the value of any other feature, given
+the class variable. For example we can take example of classification of dog.The features
+can be the size ,shape and color . These features are independent of each other .Usign
+these features classifier will classify the animal as dog .For some types of probability
+models, naive Bayes classifiers can be trained very efficiently in a supervised learning
+setting. In many practical applications, parameter estimation for naive Bayes models
+uses the method of maximum likelihood. In other words, one can work with the naive
+Bayes model without accepting Bayesian probability or using any Bayesian methods[16].
+An advantage of naive Bayes is that it only requires a small number of training data to
+estimate the parameters necessary for classification. Let n features are represented by
+vector x = (x 1 , x 2 , ...., x n ) .C k is output class k possible outcome. So instance
+probability is given by -
+p(C k |x 1 , x 2 , ...., x n )
+(4.4)
+Using Bayes’ theorem, the conditional probability can be calculated as -
+p(C k |x) =
+p(C k )p(x|C k )
+p(x)
+(4.5)
+A class’s prior may be calculated by assuming equiprobable classes or by calculating an
+estimate for the class probability from the training set. To estimate the parameters for a
+feature’s distribution, one must assume a distribution or generate nonparametric models
+for the features from the training set.
+374.7
+Results
+Following results we have obtained using the Logistic Regression, SVM, Decision Tree,
+Random Forest and Naive Bayes as -
+4.7.1
+Some mathematical interpretation of data
+In this part, the mathematical calculations are achieved so that proper analysis of dataset
+can be done. As the mathematical calculation mean, standard deviation,minimum value,25%
+value, 50%,75% and maximum value is calculated and as in in the below Table 4.1
+R.F.
+sex
+age
+cSmk
+cPD
+BPMeds
+pre_Stk
+pre_Hyp
+diabetes
+tolChol
+sysBP
+diaBP
+BMI
+heartRate
+glucose
+10_yrCHD
+count
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+3751.0
+mean
+0.4452
+49.573
+0.488
+9.008
+0.030
+0.005
+0.311
+0.027
+236.9
+132.3
+82.93
+25.80
+75.70
+81.88
+0.152
+S.D
+0.4970
+8.570
+0.499
+11.92
+0.171
+0.074
+0.463
+0.162
+44.61
+22.04
+11.93
+4.065
+11.95
+23.88
+0.359
+min
+0.000
+32.000
+0.000
+0.000
+0.000
+0.000
+0.000
+0.000
+113.0
+83.50
+48.00
+15.54
+44.00
+40.00
+0.000
+25%
+0.000
+42.000
+0.000
+0.000
+0.000
+0.000
+0.000
+0.000
+206.0
+117.0
+75.00
+23.08
+68.00
+71.00
+0.000
+50%
+0.0000
+49.000
+0.000
+0.000
+0.000
+0.000
+0.000
+0.000
+234.0
+128.0
+82.00
+25.41
+75.00
+78.00
+0.000
+Table 4.1: Mathematical interpretation of data
+38
+75%
+1.000
+56.000
+1.000
+20.00
+0.000
+0.000
+1.000
+0.000
+264.0
+144.0
+90.00
+28.06
+82.00
+87.00
+0.000
+max
+1.000
+70.000
+1.000
+70.00
+1.000
+1.000
+1.000
+1.000
+696.0
+295.0
+142.5
+56.80
+143.00
+394.0
+1.000Figure 4.7: Logit Regression results as mathematical relation
+Figure 4.7 represents the mathematical interpretation of dataset and optimiza-
+tion of the dataset with set of all features and represented as the calculation of standard
+error (std_err), z , probability (p), 25% and 75% value of the dataset for each risk factors.
+Below is the Figure 4.8 which represents the Odds Ratio, Confidence Intervals and Pval-
+ues. These are the following interpretation of Figure 4.8 as -
+• This fitted model shows that, holding all other features constant, the odds of get-
+ting diagnosed with heart disease for males (sex_male = 1)over that of females
+39Figure 4.8: Represents the Odds Ratio, Confidence Intervals and Pvalues
+(sex_male = 0) is exp(0.5815) = 1.788687. In terms of percent change, we can say
+that the odds for males are 78.8% higher than the odds for females.
+• The coefficient for age says that, holding all others constant, we will see 7% increase
+in the odds of getting diagnosed with CHD for a one year increase in age since
+exp(0.0655) = 1.067644.
+• Similarly , with every extra cigarette one smokes there is a 2% increase in the odds
+of CHD.
+• For Total cholesterol level and glucose level there is no significant change.
+• There is a 1.7% increase in odds for every unit increase in systolic Blood Pressure.
+4.7.2
+ROC curve for CHD classifier
+Figure 4.9: ROC curve for CHD classifier
+40Figure 4.9 represents the ROC curve for CHD classifier, a common way to vi-
+sualize the trade-offs of different thresholds is by using an ROC curve, a plot of the
+true positive rate ( true positives/ total positives) versus the false positive rate ( false
+positives / total negatives) for all possible choices of thresholds. A model with good
+classification accuracy should have significantly more true positives than false positives
+at all thresholds.
+4.7.3
+Prediction model comparison
+Logistic Regrsn.
+SVM
+Naive Bayes
+Decision Tree
+Random Forest
+Accuracy
+88.14%
+87.75%
+85.62%
+76.56%
+86.55%
+Precision
+60.2%
+43.87%
+58.15%
+52.22%
+60.21%
+11.86%
+12.25%
+14.38%
+23.44%
+13.45%
+Recall
+53.0%
+50.0%
+53.46%
+52.90%
+53.05%
+F-score
+53.1%
+46.73%
+57.88%
+52.32%
+53.19%
+Table 4.2: Comparison of accuracy of different models
+In table 4.2, there is comaprison done among different prediction model used in
+this system like SVM, Logistic Regression (Logistic Regrsn), Naive Bayes, Decision tree
+Random Forest and be represented using following diagram as show in Figure 4.11 -
+Figure 4.10: Comparison of accuracy of different models
+414.7.4
+Prediction of Coronory heart disease
+S.No.
+0
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+Prob. of no heart disease (0)
+0.8599
+0.9309
+0.7920
+0.8148
+0.8753
+0.8754
+0.8851
+0.8751
+0.8324
+0.9353
+0.8227
+Prob. of heart disease (1)
+0.1400
+0.0691
+0.2079
+0.1851
+0.1246
+0.1245
+0.1148
+0.1248
+0.1075
+0.0646
+0.1772
+Table 4.3: Prediction of Coronory heart disease using probability for first 10 patients
+In Table 4.3 here Probability or chances of getting coronory heart disease is
+represented for first 10 patients only and can be easily identified who has higher chances
+of CHD. Here, S.No.represents the patients in serial order with their risk factors as in
+dataset.
+4.8
+Testing
+Evaluating machine learning algorithm is an essential part of any project. For machine
+learning testing initally whole data is sparated in train and test data . The performance
+of model is computed using test data.There are many measures to evaluate the perfor-
+mance of model. Most of the time classifica- tion accuracy is taken as strong measure
+for performance evaluation.The performance of model can be calculated on the size of
+training data such as 50% , 60% , 70% , 80% and 90%. The machine model can be
+evaluated on the basis of Precision , Recall , F-Score.
+4.8.1
+Confusion Matrix
+for machine learning classification problem, it is a performance measurement, where out-
+put can be two or more classes. It is a table with 4 different combinations of predicted
+42and actual values and show below in following figure as -
+Figure 4.11: Confusion Matrix
+where,
+TP stands for True Positive
+FP stands for False Positive
+FN stands for False Negative
+TN stands for True Negative
+4.8.1.1
+Precision
+It is the number of correct positive results divided by the number of positive results
+predicted by the classifier.
+precision =
+4.8.1.2
+(T P )
+(T P + F P )
+(4.6)
+Recall
+It is the number of correct positive results divided by the number of all relevant samples
+(all samples that should have been identified as positive).
+recall =
+(T P )
+(T P + F N )
+43
+(4.7)4.8.1.3
+F-score or F1-score
+F1 Score is the Harmonic Mean between precision and recall. The range for F1 Score is [0,
+1]. It tells you how precise your classifier is (how many instances it classifies correctly), as
+well as how robust it is (it does not miss a significant number of instances).High precision
+but lower recall, gives you an extremely accurate, but it then misses a large number
+of instances that are difficult to classify. The greater the F1 Score, the better is the
+performance of our model. Mathematically, it can be expressed as :
+F − scoreorF 1 − score =
+(2 ∗ P ∗ R)
+(P + R)
+(4.8)
+where,
+P is the precision,
+R is the recall
+4.8.2
+Classification Accuracy
+Classification Accuracy is what we usually mean, when we use the term accuracy. It is
+the ratio of number of correct predictions to the total number of input samples.It works
+well only if there are equal number of samples belonging to each class and given as -
+Accuracy =
+(T P + T N )
+TP + TN + FP + FN
+44
+(4.9)4.9
+Source Code
+Following is the figure of Source code designed -
+4.9.1
+Preprocessing
+In this step dataset is cleaned properly and relevant risk factors were collected.
+i m p o r t pandas a s pd
+i m p o r t numpy a s np
+i m p o r t s t a t s m o d e l s . a p i a s sm
+import s c i p y . s t a t s as s t
+import m a t p l o t l i b . pyplot as p l t
+i m p o r t s e a b o r n a s sn
+from s k l e a r n . m e t r i c s i m p o r t c o n f u s i o n _ m a t r i x
+i m p o r t m a t p l o t l i b . mlab a s mlab
+%m a t p l o t l i b i n l i n e
+h e a r t _ d f=pd . read_csv ( ” / home/ r r a h u l / Desktop / new_heart_dataset . c s v ” )
+h e a r t _ d f . drop ( [ ’ e d u c a t i o n ’ ] , a x i s =1 , i n p l a c e=True )
+h e a r t _ d f . rename ( columns ={ ’ male ’ : ’ Sex_male ’ } , i n p l a c e=True )
+h e a r t _ d f . head ( )
+h e a r t _ d f . i s n u l l ( ) . sum ( )
+4.9.2
+Visualisation of dataset
+For better understanding visualisation of dataset is done in this part and relevant plotting
+is done as show in report.
+c o u n t=0
+f o r i i n h e a r t _ d f . i s n u l l ( ) . sum ( a x i s =1):
+i f i >0:
+co u n t=c o u n t+1
+45h e a r t _ d f . dropna ( a x i s =0 , i n p l a c e=True )
+d e f draw_histograms ( dataframe , f e a t u r e s , rows , c o l s ) :
+f i g =p l t . f i g u r e ( f i g s i z e = ( 2 0 , 2 0 ) )
+f o r i , f e a t u r e i n enumerate ( f e a t u r e s ) :
+ax= f i g . add_subplot ( rows , c o l s , i +1)
+d a t a f r a m e [ f e a t u r e ] . h i s t ( b i n s =20 , ax=ax , f a c e c o l o r =’ m i d n i g h t b l u e ’ )
+ax . s e t _ t i t l e ( f e a t u r e +” D i s t r i b u t i o n ” , c o l o r =’DarkRed ’ )
+f i g . tight_layout ()
+p l t . show ( )
+draw_histograms ( heart_df , h e a r t _ d f . columns , 6 , 3 )
+#h e a r t _ d f . TenYearCHD . v a l u e _ c o u n t s ( )
+sn . c o u n t p l o t ( x=’TenYearCHD ’ , data=h e a r t _ d f )
+sn . p a i r p l o t ( data=h e a r t _ d f )
+4.9.3
+Mathematical Interpretations
+In this part, mathematical calculations are performed such as mean, standard devia-
+tion,25%,75% ,etc calculations were done from dataset for proper visualisation and anal-
+ysis of dataset.
+heart_df . d e s c r i b e ( )
+from s t a t s m o d e l s . t o o l s i m p o r t add_constant a s add_constant
+h e a r t _ d f _ c o n s t a n t = add_constant ( h e a r t _ d f )
+h e a r t _ d f _ c o n s t a n t . head ( )
+s t . c h i s q p r o b = lambda c h i s q , d f : s t . c h i 2 . s f ( c h i s q , d f )
+c o l s=h e a r t _ d f _ c o n s t a n t . columns [ : − 1 ]
+model=sm . L o g i t ( h e a r t _ d f . TenYearCHD , h e a r t _ d f _ c o n s t a n t [ c o l s ] )
+r e s u l t=model . f i t ( )
+r e s u l t . summary ( )
+464.9.4
+Backward feature elimination
+In this section, backward feature elimination is implemented as discussed earlier.
+d e f b a c k _ f e a t u r e _ e l e m ( data_frame , dep_var , c o l _ l i s t ) :
+w h i l e l e n ( c o l _ l i s t )>0 :
+model=sm . L o g i t ( dep_var , data_frame [ c o l _ l i s t ] )
+r e s u l t=model . f i t ( d i s p =0)
+l a r g e s t _ p v a l u e=round ( r e s u l t . p v a l u e s , 3 ) . n l a r g e s t ( 1 )
+i f largest_pvalue [0] <(0.05):
+return result
+break
+else :
+c o l _ l i s t=c o l _ l i s t . drop ( l a r g e s t _ p v a l u e . i n d e x )
+r e s u l t=b a c k _ f e a t u r e _ e l e m ( h e a r t _ d f _ c o n s t a n t , h e a r t _ d f . TenYearCHD , c o l s )
+r e s u l t . summary ( )
+4.9.5
+Calculation of Odds Ratio, Confidence Intervals and Pval-
+ues
+In this section, representation and calculation of Odds Ratio, Confidence Intervals and
+Pvalues is achieved as discussed in chapter 4 of this report.
+params = np . exp ( r e s u l t . params )
+c o n f = np . exp ( r e s u l t . c o n f _ i n t ( ) )
+c o n f [ ’OR’ ] = params
+p v a l u e=round ( r e s u l t . p v a l u e s , 3 )
+c o n f [ ’ p valu e ’ ] = p v a l u e
+c o n f . columns = [ ’ CI 9 5 \ % ( 2 . 5 \ % ) ’ , ’ CI 9 5 \ % ( 9 7 . 5 \ % ) ’ , ’ Odds Ratio ’ , ’ pv alue
+print (( conf ))
+474.9.6
+Prediction Model or Classifier Model
+In this section, Prediction models or classifiers are implemented such as SVM, Logis-
+tic Regression, Decision Tree, Random Forest and Naive Bayes. In this part accuarcy,
+precision ,recall and f-scores are calculated and visualised properly with proper analysis.
+import s k l e a r n
+n e w _ f e a t u r e s=h e a r t _ d f [ [ ’ age ’ , ’ Sex_male ’ , ’ cigsPerDay ’ , ’ t o t C h o l ’ , ’ sysBP ’ , ’ g
+x=n e w _ f e a t u r e s . i l o c [ : , : − 1 ]
+y=n e w _ f e a t u r e s . i l o c [ : , − 1 ]
+from s k l e a r n . c r o s s _ v a l i d a t i o n i m p o r t t r a i n _ t e s t _ s p l i t
+x_train , x_test , y_train , y _ t e s t=t r a i n _ t e s t _ s p l i t ( x , y , t e s t _ s i z e = 0 . 2 , random_s
+from s k l e a r n . l i n e a r _ m o d e l i m p o r t L o g i s t i c R e g r e s s i o n
+l o g r e g=L o g i s t i c R e g r e s s i o n ( )
+l o g r e g . f i t ( x_train , y _ t r a i n )
+y_pred=l o g r e g . p r e d i c t ( x _ t e s t )
+s k l e a r n . m e t r i c s . a c c u r a c y _ s c o r e ( y_test , y_pred )
+from s k l e a r n . m e t r i c s i m p o r t c o n f u s i o n _ m a t r i x
+cm=c o n f u s i o n _ m a t r i x ( y_test , y_pred )
+c o n f _ m a t r i x=pd . DataFrame ( data=cm , columns =[ ’ P r e d i c t e d : 0 ’ , ’ P r e d i c t e d : 1 ’ ] , i n d
+plt . figure ( f i g s i z e = (8 ,5))
+sn . heatmap ( conf_matrix , annot=True , fmt =’d ’ , cmap=”YlGnBu ” )
+p r i n t (cm)
+TN=cm [ 0 , 0 ]
+TP=cm [ 1 , 1 ]
+FN=cm [ 1 , 0 ]
+FP=cm [ 0 , 1 ]
+s e n s i t i v i t y =TP/ f l o a t (TP+FN)
+s p e c i f i c i t y =TN/ f l o a t (TN+FP)
+p r i n t ( ’ Accuracy = ’ , (TP+TN) / f l o a t (TP+TN+FP+FN) , ’ \ n ’ ,
+’ M i s s c l a s s i f i c a t i o n = 1−Accuracy = ’ , 1 − ( (TP+TN) / f l o a t (TP+TN+FP+FN) ) , ’ \ n ’ ,
+’ S e n s i t i v i t y o r True P o s i t i v e Rate = TP/ (TP+FN) = ’ ,TP/ f l o a t (TP+FN) , ’ \ n ’ ,
+48’ S p e c i f i c i t y o r True N e g a t i v e Rate = TN/ (TN+FP) = ’ ,TN/ f l o a t (TN+FP ) , ’ \ n ’ ,
+P=TP/ f l o a t (TP+FP)
+R=(TP) / f l o a t (TP+FN)
+p r i n t ( ’ Accuracy = ’ , (TP+TN) / f l o a t (TP+TN+FP+FN) )
+p r i n t ( ’ P r e c i s i o n = ’ ,P)
+p r i n t ( ’ R e c a l l = ’ , (TP) / f l o a t (TP+FN) )
+p r i n t ( ’ F−measure = ’ , ( P∗R) / f l o a t (P+R) )
+from s k l e a r n . m e t r i c s i m p o r t p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t
+p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t ( y_test , y_pred , a v e r a g e =’macro ’ )
+y_pred_prob=l o g r e g . p r e d i c t _ p r o b a ( x _ t e s t ) [ : , : ]
+y_pred_prob_df=pd . DataFrame ( data=y_pred_prob , columns =[ ’ Prob o f no h e a r t
+y_pred_prob_df
+from s k l e a r n . p r e p r o c e s s i n g i m p o r t b i n a r i z e
+f o r i in range ( 1 , 5 ) :
+cm2=0
+y_pred_prob_yes=l o g r e g . p r e d i c t _ p r o b a ( x _ t e s t )
+y_pred2=b i n a r i z e ( y_pred_prob_yes , i / 1 0 ) [ : , 1 ]
+cm2=c o n f u s i o n _ m a t r i x ( y_test , y_pred2 )
+p r i n t ( ’ With ’ , i / 1 0 , ’ t h r e s h o l d t h e C o n f u s i o n Matrix i s ’ , ’ \ n ’ , cm2 , ’ \ n ’
+’ with ’ , cm2 [ 0 , 0 ] + cm2 [ 1 , 1 ] , ’ c o r r e c t p r e d i c t i o n s and ’ , cm2 [ 1 , 0 ] , ’
+’ S e n s i t i v i t y : ’ , cm2 [ 1 , 1 ] / ( f l o a t ( cm2 [ 1 , 1 ] + cm2 [ 1 , 0 ] ) ) , ’ S p e c i f i c i t y
+from s k l e a r n . m e t r i c s i m p o r t r o c _ c u r v e
+f p r , tpr , t h r e s h o l d s = r o c _ c u r v e ( y_test , y_pred_prob_yes [ : , 1 ] )
+p l t . plot ( fpr , tpr )
+p l t . xlim ( [ 0 . 0 , 1 . 0 ] )
+p l t . ylim ( [ 0 . 0 , 1 . 0 ] )
+p l t . t i t l e ( ’ROC c u r v e f o r Heart d i s e a s e c l a s s i f i e r ’ )
+p l t . x l a b e l ( ’ F a l s e p o s i t i v e r a t e (1− S p e c i f i c i t y ) ’ )
+p l t . y l a b e l ( ’ True p o s i t i v e r a t e ( S e n s i t i v i t y ) ’ )
+p l t . g r i d ( True )
+s k l e a r n . m e t r i c s . r o c _ a u c _ s c o r e ( y_test , y_pred_prob_yes [ : , 1 ] )
+from s k l e a r n . svm i m p o r t SVC
+svm = SVC( random_state = None , k e r n e l =’ r b f ’ )
+49svm . f i t ( x_train , y _ t r a i n )
+y_pred=svm . p r e d i c t ( x _ t e s t )
+p r e d i c t i o n _ s v m=s k l e a r n . m e t r i c s . a c c u r a c y _ s c o r e ( y_test , y_pred )
+p r i n t ( prediction_svm )
+p r i n t ( ” Test Accuracy o f SVM A l g o r i t h m : { : . 2 f }%”. f o r m a t ( svm . s c o r e ( x_test , y
+s k l e a r n . m e t r i c s . a c c u r a c y _ s c o r e ( y_test , y_pred )
+from s k l e a r n . m e t r i c s i m p o r t c o n f u s i o n _ m a t r i x
+svm_cm=c o n f u s i o n _ m a t r i x ( y_test , y_pred )
+p r i n t (svm_cm)
+TN=svm_cm [ 0 , 0 ]
+TP=svm_cm [ 1 , 1 ]
+FN=svm_cm [ 1 , 0 ]
+FP=svm_cm [ 0 , 1 ]
+s e n s i t i v i t y =TP/ f l o a t (TP+FN)
+s p e c i f i c i t y =TN/ f l o a t (TN+FP)
+from s k l e a r n . m e t r i c s i m p o r t p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t
+p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t ( y_test , y_pred , a v e r a g e =’macro ’ )
+from s k l e a r n . n a i v e _ b a y e s i m p o r t GaussianNB
+nb = GaussianNB ( )
+nb . f i t ( x_train , y _ t r a i n )
+y_pred=nb . p r e d i c t ( x _ t e s t )
+p r i n t ( ” Accuracy o f Naive Bayes : { : . 2 f }%”. f o r m a t ( nb . s c o r e ( x_test , y _ t e s t ) ∗ 1
+p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t ( y_test , y_pred , a v e r a g e =’macro ’ )
+from s k l e a r n . t r e e i m p o r t D e c i s i o n T r e e C l a s s i f i e r
+dtc = D e c i s i o n T r e e C l a s s i f i e r ( )
+d t c . f i t ( x_train , y _ t r a i n )
+y_pred=d t c . p r e d i c t ( x _ t e s t )
+p r i n t ( ” D e c i s i o n Tree Test Accuracy { : . 2 f }%”. f o r m a t ( d t c . s c o r e ( x_test , y _ t e
+p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t ( y_test , y_pred , a v e r a g e =’macro ’ )
+from s k l e a r n . e n s e m b l e i m p o r t R a n d o m F o r e s t C l a s s i f i e r
+r f = R a n d o m F o r e s t C l a s s i f i e r ( n _ e s t i m a t o r s = 1 0 0 0 , random_state = 1 )
+r f . f i t ( x_train , y _ t r a i n )
+50y_pred=r f . p r e d i c t ( x _ t e s t )
+p r i n t ( ” Random F o r e s t Accuracy S c o r e : { : . 2 f }%”. f o r m a t ( r f . s c o r e ( x_test , y _
+p r e c i s i o n _ r e c a l l _ f s c o r e _ s u p p o r t ( y_test , y_pred , a v e r a g e =’macro ’ )
+%m a t p l o t l i b i n l i n e
+# I n p u t data f i l e s a r e a v a i l a b l e i n t h e ” . . / i n p u t /” d i r e c t o r y .
+# For example , r u n n i n g t h i s ( by c l i c k i n g run o r p r e s s i n g S h i f t+Enter ) w i l
+from s u b p r o c e s s i m p o r t check_output
+methods = [ ” L o g i s t i c R e g r e s s i o n ” , ”SVM” , ” Naive Bayes ” , ” D e c i s i o n Tree ” ,
+accuracy = [ 88.1491344873502 , 87.7496671105193 , 85.62 , 76.56 , 8 6 . 5 5 ]
+c o l o r s = [ ” p u r p l e ” , ” g r e e n ” , ” o r a n g e ” , ” magenta ” ,”#CFC60E” ,”#0FBBAE” ]
+sns . set_style (” whitegrid ”)
+p l t . f i g u r e ( f i g s i z e =(10 ,3))
+p l t . y t i c k s ( np . a r a n g e ( 0 , 1 0 0 , 1 0 ) )
+p l t . y l a b e l ( ” Accuracy %”)
+p l t . x l a b e l (” Algorithms ”)
+s n s . b a r p l o t ( x=methods , y=a c c u r a c y , p a l e t t e=c o l o r s )
+p l t . show ( )
+51Chapter 5
+Conclusion & Future Work
+Heart diseases when aggravated spiral way beyond control. Heart diseases are compli-
+cated and take away lots of lives every year .When the early symptoms of heart diseases
+are ignored, the patient might end up with drastic consequences in a short span of time.
+Sedentary lifestyle and excessive stress in today’s world have worsened the situation. If
+the disease is detected early then it can be kept under control. However, it is always
+advisable to exercise daily and discard unhealthy habits at the earliest. Tobacco con-
+sumption and unhealthy diets increase the chances of stroke and heart diseases. Eating
+at least 5 helpings of fruits and vegetables a day is a good practice. For heart disease
+patients, it is advisable to restrict the intake of salt to one teaspoon per day. One of the
+major drawbacks of these works is that the main focus has been on the application ofclassification techniques for heart disease pre- diction, rather than studying various data
+cleaning and pruning techniques that prepare and make a dataset suitable for mining.
+It has been observed that a properly cleaned and pruned dataset provides much better
+accuracy than an unclean one with missing values. Selection of suitable techniques for
+data cleaning along with proper classification algorithms will lead to the development of
+prediction systems that give enhanced accuracy. In future an intelligent system may be
+developed that can lead to selection of proper treatment methods for a patient diagnosed
+with heart disease. A lot of work has been done already in making models that can
+predict whether a patient is likely to develop heart disease or not. The future task will
+be to apply future tensorflow techniques to improve the accuracy of the system further
+more to implement a GUI interface so that the system can be used by common people.
+There are several treatment methods for a patient once diagnosed with a particular form
+of heart disease. Data mining can be of very good help in deciding the line of treatment
+to be followed by extracting knowledge from such suitable databases.
+53Bibliography
+[1] R. Ezzati M., Lopez A.D., “Comparative quantification of health risks. global and
+regional burden of disease attributable to major risk factors.” World Health Organi-
+sation; Geneva.
+[2] K. S. B. S. Gajalakshmi V, Peto R, Verbal autopsy of 48 000 adult deaths attributable
+to medical causes in Chennai (formerly Madras), India. BMC Public Health. 2002
+May 16; 2():7.
+[3] I. J. Epidemiol, Mortality data from the Andhra Pradesh Rural Health Initiative.
+2006 Dec; 35(6):1522-9.
+[4] R. Ezzati M., Lopez A.D., “Comparative quantification of health risks. global and
+regional burden of disease attributable to major risk factors.” World Health Organi-
+sation; Geneva.
+[5] M. J. A. J. C. Enas EA, Yusuf S, “Prevalence of coronary artery disease in asian
+indians,” 1992 Oct 1; 70(9):945-9.
+[6] I. i. Yusuf S, “Risk factors for ischaemic and intracerebral haemorrhagic stroke in 22
+countries,” Lancet. 2010 Jul 10; 376(9735):112-23.
+[7] A. M. Amit Gupta, “Heart disease diagnosis and prediction using machine learning
+and data mining techniques: A review,” 2017.
+[8] ——, Heart Disease Diagnosis and Prediction Using Machine Learning and Data
+Mining Techniques: A Review. Research Gate Publications, pp.2137-2159, 2017.
+[9] D. D. P. K. Polaraju, Prediction of Heart Disease using Multiple Linear Regression
+Model. International Journal of Engineering Development and Research Develop-
+ment, ISSN:2321-9939, 2017.
+[10] A. kumar Dwivedi, Evaluate the performance of different machine learning techniques
+for prediction of heart disease using ten-fold cross-validation. Springer, 2016.
+[11] P. P. K. Mr. Chala Beyene, Survey on Prediction and Analysis the Occurrence of
+Heart Disease Using Data Mining Techniques. International Journal of Pure and
+Applied Mathematics, 2007.
+[12] R. K. G. Megha Shahi, Heart Disease Prediction System using Data Mining Tech-
+niques. Orient J. Computer Science Technology, vol.6 , pp.457-466, 2017.
+54[13] S. C. R. Sharmila, A conceptual method to enhance the prediction of heart diseases
+using the data techniques. International Journal of Computer Science and Engi-
+neering, 2018.
+[14] R. S. Purushottam, Prof. (Dr.) Kanak Saxena, Efficient Heart Disease Prediction
+System. International Journal of Computer Science and Engineeringpp, 962-969,
+2018.
+[15] S. Mr.P.Sai Chandrasekhar Reddy, Mr.Puneet Palagi, Heart Disease Prediction using
+ANN Algorithm in Data Mining. International Journal of Computer Science and
+Mobile Computing, pp.168- 172., 2017.
+[16] C. N. Ashwini Shetty A, Different Data Mining Approaches for Predicting Heart
+Disease. International Journal of Innovative in Science Engineering and Technology,
+Vol.5, pp.277- 281., 2016.
+[17] D. P. Jaymin Patel, Prof. Tejal Upadhyay, Heart Disease Prediction using Machine
+Learning and Data Mining Technique. International Journal of Computer Science
+and Communication, pp.129-137, 2016.
+[18] M. H. S. Boshra Brahmi, Prediction and Diagnosis of Heart Disease by Data Mining
+Techniques. Journals of Multidisciplinary Engineering Science and Technology,
+vol.2, pp.164- 168., 2015.
+[19] N. Ajam, Heart Disease Diagnoses using Artificial Neural Network. The Interna-
+tional Insitute of Science, Technology and Education, vol.5, No.4, pp.7-11, 2015.
+[20] K. K. P. D. Prajakta Ghadge, Vrushali Girme, Intelligent Heart Disease Prediction
+System using Big Data. International Journal of Recent Research in Mathematics
+Computer Science and Information Technology, vol.2, pp.73-7, 2016.
+[21] P. Sairabi H.Mujawar, Prediction of Heart Disease using Modified K-means and by
+using Naïve Bayes. International Journal of Innovative research in Computer and
+Communication Engineering, vol.3, pp.10265-10273, 2015.
+[22] V. Vapnik, The Nature of Statistical Learning Theory. Springer, N.Y., 1995. ISBN
+0-387-94559-8.
+[23] B. C., A tutorial on support vector machines for pattern recognition, In Data Mining
+and Knowledge Discovery. Kluwer Academic Publishers, Boston, 1998, (Volume 2).
+[24] M. J. M. Mozer and T. Petsche, Support vector method for function approximation,
+regression estimation, and signal processing.
+55
